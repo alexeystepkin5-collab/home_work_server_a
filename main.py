@@ -17,9 +17,7 @@ file_path = Path("tasks.txt")
 if file_path.is_file():  # Проверяет, что это файл, а не папка
     print("Файл существует")
     with open('tasks.txt', 'r', encoding='utf-8') as file:
-        temporary_variable = json.load(file)  #if not json.JSONDecodeError: TASKS = json.load(file)  # Читает весь файл восстанавливает json
-        #print(temporary_variable["tasks"])
-        TASKS = temporary_variable
+        TASKS = json.load(file)  #if not json.JSONDecodeError: TASKS = json.load(file)  # Читает весь файл восстанавливает json
         #print(TASKS)
         max_item = max(TASKS["tasks"], key=lambda x: x['id'])  # находим последнюю запись
         NEXT_ID = max_item['id'] + 1
@@ -69,10 +67,10 @@ def list_tasks(
     priority: Optional[str] = Query(default=None, description="search in priority"),
     isDone: Optional[bool] = Query(default=None, description="filter by isDone=true/false"),
 ):
-    tasks = list(TASKS.values())[0] #здесь список еще оборачивался в список
-    print (TASKS.values())
-    print(type(TASKS['tasks'][1]))
-    print(tasks)
+    tasks = list(TASKS.values())
+    #print (TASKS.values())
+    #print(type(TASKS['tasks'][1]))
+    #print(tasks)
 
     if q:
         q_low = q.lower()
@@ -107,10 +105,10 @@ def create_task(body: CreateTaskBody):
         raise HTTPException(status_code=400, detail="priority is required")
 
     task = {"id": NEXT_ID, "title": title, "priority": priority, "isDone": False}
-    TASKS['tasks'].append(task) #???????????????????????? было TASKS[NEXT_ID] = task
+    TASKS[NEXT_ID] = task
     NEXT_ID += 1
-    print (TASKS)
-    print (task)
+    #print (TASKS)
+    #print (task)
 
     return {"task": task}
 
