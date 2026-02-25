@@ -6,24 +6,27 @@ import json
 
 app = FastAPI(title="Todo API (simple)")
 
+# In-memory хранилище
+# Запись TASKS: Dict[int, dict] = {} в Python означает создание пустой переменной-словаря TASKS,
+# инициализируемой как {}, с явным указанием типов данных (type hinting) для ключей и значений.
+TASKS: Dict[int, dict] = {}  # Аннотация типов (из модуля typing).
+NEXT_ID = 1
 
 # проверка наличия файла tasks.txt
 file_path = Path("tasks.txt")
 if file_path.is_file():  # Проверяет, что это файл, а не папка
-    #print("Файл существует")
+    print("Файл существует")
     with open('tasks.txt', 'r', encoding='utf-8') as file:
-        TASKS = json.load(file)  # Читает весь файл восстанавливает json
+        temporary_variable = json.load(file)  #if not json.JSONDecodeError: TASKS = json.load(file)  # Читает весь файл восстанавливает json
+        #print(temporary_variable["tasks"])
+        TASKS = temporary_variable
+        #print(TASKS)
         max_item = max(TASKS["tasks"], key=lambda x: x['id'])  # находим последнюю запись
         NEXT_ID = max_item['id'] + 1
 else:
     print("Файл не найден")
     with open("tasks.txt", "w") as f:
         pass  # Файл создается пустым, ничего в него не записывая
-    # In-memory хранилище
-    # Запись TASKS: Dict[int, dict] = {} в Python означает создание пустой переменной-словаря TASKS,
-    # инициализируемой как {}, с явным указанием типов данных (type hinting) для ключей и значений.
-    TASKS: Dict[int, dict] = {}  # Аннотация типов (из модуля typing).
-    NEXT_ID = 1
 
 # команда для запуска червера
 # uvicorn main:app --reload --host 127.0.0.1 --port 8080
@@ -66,7 +69,10 @@ def list_tasks(
     priority: Optional[str] = Query(default=None, description="search in priority"),
     isDone: Optional[bool] = Query(default=None, description="filter by isDone=true/false"),
 ):
-    tasks = list(TASKS.values())
+    tasks = list(TASKS.values())[0] #здесь список еще оборачивался в список
+    print (TASKS.values())
+    #print(type(TASKS['tasks'][1]))
+    print(tasks)
 
     if q:
         q_low = q.lower()
@@ -101,8 +107,10 @@ def create_task(body: CreateTaskBody):
         raise HTTPException(status_code=400, detail="priority is required")
 
     task = {"id": NEXT_ID, "title": title, "priority": priority, "isDone": False}
-    TASKS[NEXT_ID] = task
+    TASKS['tasks'].append(task) #???????????????????????? было TASKS[NEXT_ID] = task
     NEXT_ID += 1
+    print (TASKS)
+    print (task)
 
     return {"task": task}
 
@@ -112,6 +120,8 @@ def create_task(body: CreateTaskBody):
 def complete_task(task_id: int, body: CompleteTaskBody):
 
     task = TASKS.get(task_id)
+    print(task)
+
     if not task:
         raise HTTPException(status_code=404, detail="Not found")
 
