@@ -15,16 +15,21 @@ NEXT_ID = 1
 # проверка наличия файла tasks.txt
 file_path = Path("tasks.txt")
 if file_path.is_file():  # Проверяет, что это файл, а не папка
-    print("Файл существует")
+    #print("Файл существует")
     with open('tasks.txt', 'r', encoding='utf-8') as file:
-        TASKS = json.load(file)  #if not json.JSONDecodeError: TASKS = json.load(file)  # Читает весь файл восстанавливает json
+        #if not json.JSONDecodeError: TASKS = json.load(file)  # Читает весь файл восстанавливает json
         #print(TASKS)
-        max_item = max(TASKS["tasks"], key=lambda x: x['id'])  # находим последнюю запись
-        NEXT_ID = max_item['id'] + 1
+        line_counter=1
+        for line in file:
+            TASKS[line_counter] = json.loads(line) #line.strip() # .strip() удаляет символ переноса строки \n
+            line_counter += 1
+
+        NEXT_ID = len(TASKS) + 1
+        #print(TASKS)
 else:
     print("Файл не найден")
-    with open("tasks.txt", "w") as f:
-        pass  # Файл создается пустым, ничего в него не записывая
+    #with open("tasks.txt", "w") as f:
+    #    pass  # Файл создается пустым, ничего в него не записывая
 
 # команда для запуска червера
 # uvicorn main:app --reload --host 127.0.0.1 --port 8080
@@ -68,6 +73,7 @@ def list_tasks(
     isDone: Optional[bool] = Query(default=None, description="filter by isDone=true/false"),
 ):
     tasks = list(TASKS.values())
+    #print (TASKS)
     #print (TASKS.values())
     #print(type(TASKS['tasks'][1]))
     #print(tasks)
