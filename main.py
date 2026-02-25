@@ -70,9 +70,9 @@ def list_tasks(
     isDone: Optional[bool] = Query(default=None, description="filter by isDone=true/false"),
 ):
     tasks = list(TASKS.values())[0] #здесь список еще оборачивался в список
-    print (TASKS.values())
+    #print (TASKS.values())
     #print(type(TASKS['tasks'][1]))
-    print(tasks)
+    #print(tasks)
 
     if q:
         q_low = q.lower()
