@@ -1,3 +1,5 @@
 {"id": 1, "title": "закончить домашнее задание по python", "priority": "high", "isDone": false}
 {"id": 2, "title": "приступить к изучению HTML", "priority": "high", "isDone": false}
 {"id": 3, "title": "постараться не отставать от группы", "priority": "high", "isDone": false}
+{"id": 4, "title": "пересмотреть все материалы и вебинары", "priority": "high", "isDone": false}
+{"id": 5, "title": "перебрать книги по python", "priority": "high", "isDone": false}

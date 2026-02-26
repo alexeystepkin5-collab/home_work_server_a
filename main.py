@@ -16,7 +16,7 @@ NEXT_ID = 1
 file_path = Path("tasks.txt")
 if file_path.is_file():  # Проверяет, что это файл, а не папка
     #print("Файл существует")
-    with open('tasks.txt', 'r', encoding='utf-8') as file:
+    with open(file_path, 'r', encoding='utf-8') as file:
         #if not json.JSONDecodeError: TASKS = json.load(file)  # Читает весь файл восстанавливает json
         #print(TASKS)
         line_counter=1
@@ -32,7 +32,7 @@ if file_path.is_file():  # Проверяет, что это файл, а не �
 else:
     print("Файл не найден")
     print(f"Создан файл: {file_path}")
-    with open("tasks.txt", "w") as f:
+    with open(file_path, "w") as f:
         pass  # Файл создается пустым, ничего в него не записывая
 
 # команда для запуска червера
@@ -121,10 +121,10 @@ def create_task(body: CreateTaskBody):
     #print (TASKS)
     #print (task)
 
-    file_path = Path("tasks.txt") # пишем в файл добавленный блок
+    #file_path = Path("tasks.txt") # пишем в файл добавленный блок
     if file_path.is_file():  # Проверяет, что это файл, а не папка
         # print("Файл существует")
-        with open('tasks.txt', 'a', encoding='utf-8') as file:
+        with open(file_path, 'a', encoding='utf-8') as file:
             file.write(json.dumps(task, ensure_ascii=False) + "\n") # добавляем строку в файл, отключаем экранирование символов
     else:
         print("Файл не найден")
@@ -159,6 +159,8 @@ def complete_task(task_id: int, body: CompleteTaskBody):
         task["isDone"] = body.isDone
     else:
         task["isDone"] = True
+
+
 
     return {} #{"task": task}
 
