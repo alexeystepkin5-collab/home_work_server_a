@@ -21,15 +21,19 @@ if file_path.is_file():  # Проверяет, что это файл, а не �
         #print(TASKS)
         line_counter=1
         for line in file:
-            TASKS[line_counter] = json.loads(line) #line.strip() # .strip() удаляет символ переноса строки \n
+            try: # проверка корректности json файла
+                TASKS[line_counter] = json.loads(line) #line.strip() # .strip() удаляет символ переноса строки \n
+            except json.JSONDecodeError as e:
+                print(f"Ошибка при разборе JSON: {e}")
             line_counter += 1
 
         NEXT_ID = len(TASKS) + 1
         #print(TASKS)
 else:
     print("Файл не найден")
-    #with open("tasks.txt", "w") as f:
-    #    pass  # Файл создается пустым, ничего в него не записывая
+    print(f"Создан файл: {file_path}")
+    with open("tasks.txt", "w") as f:
+        pass  # Файл создается пустым, ничего в него не записывая
 
 # команда для запуска червера
 # uvicorn main:app --reload --host 127.0.0.1 --port 8080
@@ -111,10 +115,20 @@ def create_task(body: CreateTaskBody):
         raise HTTPException(status_code=400, detail="priority is required")
 
     task = {"id": NEXT_ID, "title": title, "priority": priority, "isDone": False}
+
     TASKS[NEXT_ID] = task
     NEXT_ID += 1
     #print (TASKS)
     #print (task)
+
+    file_path = Path("tasks.txt") # пишем в файл добавленный блок
+    if file_path.is_file():  # Проверяет, что это файл, а не папка
+        # print("Файл существует")
+        with open('tasks.txt', 'a', encoding='utf-8') as file:
+            file.write(json.dumps(task, ensure_ascii=False) + "\n") # добавляем строку в файл, отключаем экранирование символов
+    else:
+        print("Файл не найден")
+
 
     return {"task": task}
 
@@ -124,7 +138,7 @@ def create_task(body: CreateTaskBody):
 def complete_task(task_id: int, body: CompleteTaskBody):
 
     task = TASKS.get(task_id)
-    print(task)
+    #print(task)
 
     if not task:
         raise HTTPException(status_code=404, detail="Not found")

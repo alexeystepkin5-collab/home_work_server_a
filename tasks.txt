@@ -1,2 +1,3 @@
-{"id": 1, "title": "начать изучение третьей темы", "priority": "high", "isDone": false}
-{"id": 2, "title": "начать изучение третьей темы", "priority": "high", "isDone": false}
+{"id": 1, "title": "закончить домашнее задание по python", "priority": "high", "isDone": false}
+{"id": 2, "title": "приступить к изучению HTML", "priority": "high", "isDone": false}
+{"id": 3, "title": "постараться не отставать от группы", "priority": "high", "isDone": false}
