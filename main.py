@@ -159,7 +159,11 @@ def complete_task(task_id: int, body: CompleteTaskBody):
         task["isDone"] = body.isDone
     else:
         task["isDone"] = True
-
+    if file_path.is_file():  # Проверяет, что это файл, а не папка
+        # print("Файл существует")
+        with open(file_path, 'w', encoding='utf-8') as file: # перезаписываем файл всех значений
+            for item in TASKS:
+                file.write(json.dumps(TASKS[item], ensure_ascii=False) + "\n") # добавляем строку в файл, отключаем экранирование символов
 
 
     return {} #{"task": task}
